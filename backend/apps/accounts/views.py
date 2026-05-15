@@ -23,7 +23,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 User = get_user_model()
 
 
-# 🔧 Safe RBAC permission (unchanged behavior, just documented better)
+# Safe RBAC permission (unchanged behavior, just documented better).
 class IsAdminOrDepartmentOrAffair(permissions.BasePermission):
     """
     Custom DRF permission that restricts access to users whose role is one of:
@@ -53,7 +53,7 @@ class UserListView(generics.ListAPIView):
     Supports optional ?role= query parameter for filtering by role.
     """
 
-    # Default queryset — all users, alphabetically ordered
+    # Default queryset: all users, alphabetically ordered.
     queryset = User.objects.all().order_by('username')
     serializer_class  = UserListSerializer
     permission_classes = [IsAdminOrDepartmentOrAffair]
@@ -68,7 +68,7 @@ class UserListView(generics.ListAPIView):
         # Read the optional 'role' filter from the request's query string
         role = self.request.query_params.get('role')
 
-        # 🔧 Safe improvement: defensive filtering (no logic change)
+        # Safe improvement: defensive filtering with no logic change.
         # The truthiness check (`if role`) ensures we only call .filter() when
         # a non-empty value is provided, avoiding an unintended empty-string match
         if role:
@@ -94,7 +94,7 @@ User = get_user_model()
 class RegisterView(generics.CreateAPIView):
     """
     Public endpoint for creating a new user account.
-    No authentication is required — unauthenticated visitors must be able to register.
+    No authentication is required; unauthenticated visitors must be able to register.
 
     On success (HTTP 201), the response includes the serialized user data plus
     freshly minted 'refresh' and 'access' JWT tokens so the client can log in
@@ -119,7 +119,7 @@ class RegisterView(generics.CreateAPIView):
         # Persist the new user; calls RegisterSerializer.create() under the hood
         user = serializer.save()
 
-        # 🔧 Safe improvement: isolated import (already exists but kept safe)
+        # Safe improvement: isolated import kept close to token generation.
         # Importing RefreshToken here rather than at the top of the file avoids a
         # circular import risk and keeps the dependency contained to this method
         from rest_framework_simplejwt.tokens import RefreshToken
@@ -130,7 +130,7 @@ class RegisterView(generics.CreateAPIView):
         # Start with the serialized user data (id, username, email, role, user_id)
         data = serializer.data
 
-        # 🔧 Safe enhancement: ensure response consistency
+        # Safe enhancement: ensure response consistency.
         # Attach the string representations of both tokens so the client can
         # store them and begin making authenticated requests immediately
         data['refresh'] = str(refresh)
@@ -139,7 +139,7 @@ class RegisterView(generics.CreateAPIView):
         # get_success_headers() returns the Location header pointing to the new resource
         headers = self.get_success_headers(serializer.data)
 
-        # HTTP 201 Created — signals that a new resource was successfully persisted
+        # HTTP 201 Created signals that a new resource was successfully persisted.
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
 
@@ -151,5 +151,5 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     to the standard access/refresh token response body.
     """
 
-    # Swap the default serializer for our custom one — no other behaviour changes
+    # Swap the default serializer for our custom one; no other behaviour changes.
     serializer_class = CustomTokenObtainPairSerializer
