@@ -56,6 +56,7 @@ const FeedbackScreen = ({ navigation, token, user }) => {
 
     setSubmitting(true);
     try {
+      // The backend expects multipart payloads so image attachments and text fields travel together.
       const formData = new FormData();
       formData.append('subject', form.subject);
       formData.append('description', form.description);
