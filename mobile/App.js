@@ -6,7 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import MainNavigator from './src/navigation/MainNavigator';
-
+// Root stack navigator used for handling authentication
+// flow and switching between public/private screens.
 const Stack = createNativeStackNavigator();
 
 export default function App() {
