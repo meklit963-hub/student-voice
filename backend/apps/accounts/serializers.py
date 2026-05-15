@@ -26,10 +26,10 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        # Explicit field list — password hash and other sensitive columns are excluded
+        # Explicit field list: password hashes and other sensitive columns are excluded.
         fields = ('id', 'username', 'email', 'role', 'user_id')
 
-    # 🔧 Safe enhancement: read-only protection for list API
+    # Safe enhancement: read-only protection for list API.
     # Mirrors the fields tuple so that every field is treated as read-only,
     # preventing any accidental write operations through this serializer
     read_only_fields = fields
@@ -52,13 +52,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         # password2 is included here for input validation but is removed before saving (see create())
         fields = ('username', 'password', 'password2', 'email', 'role', 'user_id')
 
-        # 🔧 Safe enhancement: prevent unintended updates via register endpoint
+        # Safe enhancement: prevent unintended updates via register endpoint.
         # Empty tuple (not None) so DRF does not accidentally mark any field read-only
         read_only_fields = ()
 
     def validate(self, attrs):
         """
-        Object-level validation — runs after all individual field validators pass.
+        Object-level validation runs after all individual field validators pass.
         Normalises string inputs and enforces business rules that span multiple fields.
         """
 
@@ -88,11 +88,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         which handles password hashing automatically.
         """
 
-        # password2 was only needed for confirmation — remove it before saving
+        # password2 was only needed for confirmation; remove it before saving
         # to avoid passing an unexpected keyword argument to create_user()
         validated_data.pop('password2')
 
-        # 🔧 Safe enhancement: normalize email (prevents duplicate case issues)
+        # Safe enhancement: normalize email to prevent duplicate case issues.
         # Lowercasing ensures "User@Example.com" and "user@example.com" are treated
         # as the same address, avoiding silent duplicate account creation
         email = validated_data.get('email', '')
