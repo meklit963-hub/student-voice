@@ -92,6 +92,7 @@ export async function submitFeedback(token, feedback) {
     'Accept': 'application/json',
   };
 
+  // Let fetch set the multipart boundary when a photo upload uses FormData.
   if (!isFormData) {
     headers['Content-Type'] = 'application/json';
   }
