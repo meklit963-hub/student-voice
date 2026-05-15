@@ -1,68 +1,75 @@
+# Student Voice
 
-A modern, cross-platform mobile application built with **React Native** designed to streamline student feedback and academic evaluations. **StudentVoice** bridges the gap between students and educators, providing a transparent and efficient way to improve the learning experience.
+Student Voice is a mobile-first feedback system for students, departments, and student affairs teams. The app lets students submit academic, facility, and service feedback, including optional anonymous reports and image attachments, while staff users can review and update feedback status.
 
-## 📱 Features
+## Features
 
-- **Real-time Evaluations:** Submit feedback on courses and instructors instantly.
-- **Anonymous Reporting:** Secure and private feedback channels to ensure honest student input.
-- **Interactive Dashboards:** Visual representation of evaluation data for faculty.
-- **Push Notifications:** Reminders for pending surveys and academic updates.
-- **Offline Support:** Draft feedback offline and sync once connected.
+- Student feedback submission with category and routing fields.
+- Optional anonymous feedback handling.
+- Image attachment support from the mobile app.
+- Role-aware dashboards for students, departments, student affairs, and admins.
+- Notification and feedback APIs served by the Django backend.
 
-## 🚀 Tech Stack
+## Tech Stack
 
-- **Framework:** React Native
-- **State Management:** Redux Toolkit / Context API
-- **Navigation:** React Navigation
-- **Backend:** [Mention your backend here, e.g., Firebase / Node.js]
-- **Database:** [Mention your database here, e.g., PostgreSQL / MongoDB]
+- Mobile: Expo, React Native, React Navigation
+- Backend: Django, Django REST Framework
+- Database: SQLite for local development
+- API configuration: `EXPO_PUBLIC_API_BASE_URL` for mobile-to-backend routing
 
-## 🛠️ Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com
-   cd student-voice
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. **Install iOS CocoaPods (macOS only):**
-   ```bash
-   cd ios && pod install && cd ..
-   ```
-
-4. **Run the application:**
-   - **Android:** `npx react-native run-android`
-   - **iOS:** `npx react-native run-ios`
-
-## 📂 Folder Structure
+## Repository Structure
 
 ```text
-src/
- ┣ assets/       # Images, fonts, and static files
- ┣ components/   # Reusable UI components
- ┣ navigation/   # Stack and Tab navigators
- ┣ screens/      # Main application screens
- ┣ services/     # API calls and external integrations
- ┣ store/        # State management logic
- ┗ utils/        # Helper functions and constants
+backend/
+  apps/
+    accounts/        # Custom user model, auth views, serializers
+    departments/     # Department-related backend API code
+    feedback/        # Feedback model, serializers, views, services
+    notifications/   # Notification model, serializers, views, services
+  config/            # Django project settings and URL routing
+  manage.py
+
+mobile/
+  src/
+    api/             # Shared API client helpers
+    components/      # Reusable mobile layout components
+    navigation/      # Main app navigation
+    screens/         # Role-specific screens and dashboards
+    utils/           # Collaboration and review matrices
 ```
 
-## 🤝 Contributing
+## Local Development
 
-Contributions are welcome! Please follow these steps:
-1. Fork the project.
-2. Create your feature branch (`git checkout -b feature/NewFeature`).
-3. Commit your changes (`git commit -m 'Add some NewFeature'`).
-4. Push to the branch (`git push origin feature/NewFeature`).
-5. Open a Pull Request.
+### Backend
 
-## 📄 License
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
+python manage.py migrate
+python manage.py runserver
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The backend serves API routes under `/api/`.
+
+### Mobile
+
+```bash
+cd mobile
+npm install
+npm start
+```
+
+By default, the mobile API client points Android emulators to `http://10.0.2.2:8000/api` and iOS/web to `http://localhost:8000/api`. Override this when testing on a physical device:
+
+```bash
+set EXPO_PUBLIC_API_BASE_URL=http://YOUR-LAN-IP:8000/api
+npm start
+```
+
+## Notes For Contributors
+
+- Keep backend role logic close to serializers, permissions, and viewsets so access rules are easy to audit.
+- Prefer service helpers for reusable database workflows that should stay outside view classes.
+- Keep mobile API behavior centralized in `mobile/src/api/api.js` instead of duplicating fetch logic in screens.
+- Avoid behavior-changing pull requests unless the affected role workflow has been tested end to end.

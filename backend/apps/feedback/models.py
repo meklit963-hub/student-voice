@@ -33,10 +33,11 @@ class Feedback(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # ✅ SAFE ADDITIONS (no schema change impact on existing logic usage)
     class Meta:
+        # Keep list endpoints and admin views newest-first by default.
         ordering = ['-created_at']
         indexes = [
+            # Common review filters used by staff dashboards.
             models.Index(fields=['status']),
             models.Index(fields=['category']),
             models.Index(fields=['created_at']),

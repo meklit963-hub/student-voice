@@ -26,7 +26,7 @@ class User(AbstractUser):
         ('student',         'Student'),
     )
 
-    # Stores the user's system role — controls which views and data they can access.
+    # Stores the user's system role and controls which views and data they can access.
     # max_length=20 comfortably fits the longest current choice ('student_affairs' = 15 chars).
     # choices= enforces the allowed values at the form/serializer validation layer;
     # database-level enforcement requires a separate migration constraint if needed.
@@ -41,7 +41,7 @@ class User(AbstractUser):
         # Human-readable names shown in the Django admin interface
         verbose_name        = "User"
         verbose_name_plural = "Users"
-        # Default queryset ordering — alphabetical by username for consistent list views
+        # Default queryset ordering: alphabetical by username for consistent list views.
         ordering = ['username']
 
     def __str__(self):
