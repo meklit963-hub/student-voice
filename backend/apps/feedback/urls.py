@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-# ✅ Namespace protection (SAFE improvement for large projects)
+# Namespace protection keeps reverse URL names unambiguous in larger projects.
 app_name = "feedback"
 
 feedback_list = FeedbackViewSet.as_view({
@@ -26,11 +26,11 @@ feedback_categories = FeedbackViewSet.as_view({
 })
 
 urlpatterns = [
-    # 🔐 Authentication
+    # Authentication token endpoints used by the mobile app.
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # 📝 Feedback APIs
+    # Feedback APIs for list/create, detail updates, and category metadata.
     path('feedbacks/', feedback_list, name='feedback-list'),
     path('feedbacks/<int:pk>/', feedback_detail, name='feedback-detail'),
     path('feedbacks/categories/', feedback_categories, name='feedback-categories'),
