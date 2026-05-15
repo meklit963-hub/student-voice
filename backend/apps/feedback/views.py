@@ -43,6 +43,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAdminOrDepartmentOrReadOnly]
 
     def get_queryset(self):
+        """Limit feedback visibility by role before serialization."""
         user = self.request.user
         if not user.is_authenticated:
             return Feedback.objects.none()
@@ -50,11 +51,12 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         if user.role in ['admin', 'department', 'student_affairs']:
             return Feedback.objects.select_related('student').all()
 
-        # Students only see their own feedback
+        # Students only see their own feedback.
         return Feedback.objects.select_related('student').filter(student=user)
 
     def perform_create(self, serializer):
-        # Normalize anonymous safely
+        """Attach the current student unless the submission is anonymous."""
+        # Normalize anonymous safely because multipart form data sends strings.
         anonymous = self.request.data.get('anonymous', False)
         if isinstance(anonymous, str):
             anonymous = anonymous.lower() == 'true'
@@ -66,6 +68,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='categories')
     def categories(self, request):
+        """Return the valid feedback category keys for mobile pickers."""
         from .models import Feedback
         field = Feedback._meta.get_field('category')
         choices = [c[0] for c in getattr(field, 'choices', [])]
